@@ -5,7 +5,7 @@
 <title>나만의 세계 도시 버스 투어 기획서</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --navy:#2F6FED;
@@ -24,18 +24,16 @@
     --label:#D8E3F7;
   }
   *{box-sizing:border-box;}
+  input, textarea, select, button{ font-family:'Noto Sans KR',"Malgun Gothic","Apple SD Gothic Neo",sans-serif !important; }
   input::placeholder, textarea::placeholder{
     color:var(--navy);
     opacity:1;
   }
-  html{background:#C8E4FB;}
+  html{background:#fff;}
   html,body{min-height:100%;}
   body{
     font-family:'Noto Sans KR',"Malgun Gothic","Apple SD Gothic Neo",sans-serif;
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ctext x='10' y='50' font-size='38' opacity='0.16'%3E%F0%9F%9A%8C%3C/text%3E%3Ctext x='115' y='38' font-size='30' opacity='0.14'%3E%F0%9F%9A%8F%3C/text%3E%3Ctext x='100' y='120' font-size='34' opacity='0.15'%3E%F0%9F%8E%AB%3C/text%3E%3Ctext x='18' y='128' font-size='28' opacity='0.14'%3E%F0%9F%8C%B3%3C/text%3E%3Ctext x='60' y='188' font-size='30' opacity='0.14'%3E%F0%9F%8F%99%EF%B8%8F%3C/text%3E%3Ctext x='150' y='185' font-size='28' opacity='0.14'%3E%F0%9F%97%BA%EF%B8%8F%3C/text%3E%3C/svg%3E");
-    background-color:#C8E4FB;
-    background-repeat:repeat;
+    background:#fff;
     margin:0;
     padding:32px 16px;
     color:var(--ink);
@@ -43,27 +41,21 @@
   .sheet{
     max-width:940px;
     margin:0 auto;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cpolygon points='-48,0 -36,0 -84,48 -96,48' fill='%23FFC93C'/%3E%3Cpolygon points='-36,0 -24,0 -72,48 -84,48' fill='%23D81B6A'/%3E%3Cpolygon points='-24,0 -12,0 -60,48 -72,48' fill='%232F6FED'/%3E%3Cpolygon points='-12,0 0,0 -48,48 -60,48' fill='%231E9E4A'/%3E%3Cpolygon points='0,0 12,0 -36,48 -48,48' fill='%23FFC93C'/%3E%3Cpolygon points='12,0 24,0 -24,48 -36,48' fill='%23D81B6A'/%3E%3Cpolygon points='24,0 36,0 -12,48 -24,48' fill='%232F6FED'/%3E%3Cpolygon points='36,0 48,0 0,48 -12,48' fill='%231E9E4A'/%3E%3Cpolygon points='48,0 60,0 12,48 0,48' fill='%23FFC93C'/%3E%3Cpolygon points='60,0 72,0 24,48 12,48' fill='%23D81B6A'/%3E%3Cpolygon points='72,0 84,0 36,48 24,48' fill='%232F6FED'/%3E%3Cpolygon points='84,0 96,0 48,48 36,48' fill='%231E9E4A'/%3E%3Cpolygon points='96,0 108,0 60,48 48,48' fill='%23FFC93C'/%3E%3C/svg%3E");
+    padding:10px;
+    box-shadow:0 24px 60px -30px rgba(21,44,70,0.4);
+    border-radius:20px;
+    position:relative;
+  }
+  .sheet-inner{
     background:#FFF7D1;
     padding:0 0 30px;
-    box-shadow:0 24px 60px -30px rgba(21,44,70,0.4);
-    border-radius:18px;
-    border:2.5px solid var(--navy);
+    border-radius:11px;
     position:relative;
     overflow:hidden;
   }
-  .sheet::before{
-    content:"";
-    display:block;
-    height:12px;
-    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='12'%3E%3Crect width='30' height='12' fill='%232F6FED'/%3E%3Cpolygon points='10%2C0 24%2C0 14%2C12 0%2C12' fill='%23FFC93C'/%3E%3C/svg%3E") repeat-x;
-  }
-  .sheet::after{
-    content:"";
-    display:block;
-    height:12px;
-    margin-top:18px;
-    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='12'%3E%3Crect width='30' height='12' fill='%232F6FED'/%3E%3Cpolygon points='10%2C0 24%2C0 14%2C12 0%2C12' fill='%23FFC93C'/%3E%3C/svg%3E") repeat-x;
-  }
+  .sheet::before, .sheet::after{ display:none !important; }
+  .ticket-perforation::before, .ticket-perforation::after{ display:none !important; }
   /* 탑승권 절취선: 헤더와 본문 사이 점선 + 반원 노치 */
   .ticket-perforation{
     position:relative;
@@ -76,7 +68,7 @@
     position:absolute;
     top:50%;
     width:26px; height:26px;
-    background:#C8E4FB;
+    background:#fff;
     border-radius:50%;
     transform:translateY(-50%);
   }
@@ -107,9 +99,9 @@
   }
   .header-title{
     text-align:center;
-    color:var(--navy);
+    color:#3A3F47;
     margin:0;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
     font-weight:700;
     font-size:41px;
     line-height:1.35;
@@ -164,7 +156,7 @@
     color:var(--ink);
     background:transparent;
     text-align:right;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
   }
   .info-row input::placeholder{ font-size:13px; font-weight:500; }
   .info-row input:focus{ outline:none; border-color:var(--gold); }
@@ -184,10 +176,10 @@
     color:var(--gray);
     width:118px;
     text-align:right;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
   }
   /* ---------- 본문 ---------- */
-  .sheet > section, .sheet > .btn-wrap{ padding-left:34px; padding-right:34px; }
+  .sheet-inner > section, .sheet-inner > .btn-wrap{ padding-left:34px; padding-right:34px; }
   section{
     margin-bottom:64px;
     padding-top:2px;
@@ -199,27 +191,51 @@
     margin-bottom:12px;
   }
   .step-num{
-    background:var(--paper);
-    color:var(--gray);
+    background:var(--navy);
+    color:#fff;
     width:30px;
     height:30px;
     border-radius:50%;
     border:2px solid var(--navy);
+    box-shadow:0 2px 0 rgba(0,0,0,0.18);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:15.5px;
-    font-weight:700;
+    font-size:16px;
+    font-weight:900;
     flex-shrink:0;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
   }
-  section:nth-of-type(2) .step-num{ border-color:var(--coral); }
-  section:nth-of-type(2) .step-title h2{ color:var(--coral); }
+  section:nth-of-type(1){ --theme:#2F6FED; }
+  section:nth-of-type(2){ --theme:#D81B6A; }
+  section:nth-of-type(3){ --theme:#1E9E4A; }
+  section .step-num{ border-color:var(--theme); background:var(--theme); }
+  section .step-title h2{ color:var(--theme); }
+  section input::placeholder, section textarea::placeholder{ color:var(--theme); opacity:1; }
+  section .step-desc, section .map-placeholder, section .photo-box span, section .chip-empty{ color:var(--theme); }
+  section:nth-of-type(1) .pick-select:required:invalid, section:nth-of-type(1) .city-big-title:required:invalid{ color:var(--theme); }
+  section:nth-of-type(2) .lm-card{ border-top-color:var(--theme); }
+  section:nth-of-type(3) .tl-item{ border-left-color:var(--theme); }
+  /* 학생이 입력한 글자: 진한 회색 */
+  input, textarea, select:not(:has(option[value='']:checked)){ color:#333 !important; }
+  select:has(option[value='']:checked){ color:var(--theme, var(--navy)) !important; font-family:'Noto Sans KR',sans-serif !important; font-size:12.5px !important; font-weight:700 !important; }
+  /* 작성칸 테두리: 섹션 테마색, 조금 두껍게 */
+  section .pick-select, section .city-big-title, section .country-tag,
+  section .feature-box, section .country-map-box, section .map-placeholder,
+  section .photo-box, section .lm-card textarea, section .tl-item,
+  section .tl-time-range, section .tl-fields textarea.desc{
+    border-color:var(--theme) !important; border-width:2px !important; border-style:solid !important;
+  }
+  section .country-tag{ border-right-width:0 !important; }
+  section .feature-box, section .tl-item{ border-left-width:4px !important; }
+  
+  section .lm-card{ border-color:var(--theme) !important; border-width:2px !important; border-top-width:4px !important; }
+  section .lm-card input.lm-name, section input.place{ border-bottom:2px solid var(--theme) !important; }
   .step-title h2{
     margin:0;
     font-size:21px;
     color:var(--navy);
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
     font-weight:700;
     letter-spacing:-0.2px;
   }
@@ -258,7 +274,7 @@
     font-weight:700;
     color:var(--gray);
     padding-top:4px;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
   }
   .pick-pair{ display:flex; align-items:center; gap:6px; flex:1; min-width:0; }
   .pick-pair .pick-label{ padding-top:0; flex:0 0 auto; }
@@ -282,6 +298,7 @@
     align-items:stretch;
     margin:3px 0 10px;
   }
+  .country-tag:empty{ display:none; }
   .country-tag{
     flex:0 0 auto;
     display:flex;
@@ -291,7 +308,7 @@
     border:1.5px solid var(--gold);
     border-right:none;
     color:var(--gray);
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
     font-weight:700;
     font-size:17px;
     white-space:nowrap;
@@ -300,7 +317,7 @@
     appearance:none;
     -webkit-appearance:none;
     cursor:pointer;
-    background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%232F6FED' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 10px center;
+    background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0h12L6 8z' fill='%232F6FED'/%3E%3C/svg%3E") no-repeat right 10px center;
   }
   .pick-select:required:invalid, .city-big-title:required:invalid{ color:var(--navy); }
   .pick-select:disabled, .city-big-title:disabled{ cursor:default; opacity:1; }
@@ -315,7 +332,7 @@
     min-width:0;
     font-size:21px;
     font-weight:700;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
     color:var(--ink);
     background-color:var(--paper);
     border:1.5px solid var(--gold);
@@ -343,7 +360,7 @@
     font-size:14px;
     font-weight:700;
     color:var(--gray);
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
     padding-top:2px;
     white-space:nowrap;
   }
@@ -389,14 +406,14 @@
   .city-label{
     position:absolute;
     transform:translate(-50%,-50%);
-    background:#FFB020;
-    color:#3D2600;
-    font-size:13.5px;
+    background:#2F6FED;
+    color:#fff;
+    font-size:15px;
     font-weight:700;
-    padding:2px 9px;
+    padding:3px 11px;
     border-radius:2px;
     white-space:nowrap;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
     box-shadow:0 1px 3px rgba(0,0,0,0.25);
   }
   .city-marker{
@@ -425,7 +442,7 @@
     padding:2px 8px;
     border-radius:2px;
     white-space:nowrap;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
   }
   .map-placeholder{
     position:absolute;
@@ -479,7 +496,7 @@
   }
   .lm-title{
     margin:14px 0 8px;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
     font-weight:700;
     font-size:16px;
     color:var(--gray);
@@ -500,7 +517,7 @@
     width:100%;
     border:none;
     border-bottom:1.5px solid var(--line);
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
     font-weight:800;
     font-size:15px;
     color:var(--ink);
@@ -616,7 +633,7 @@
     color:var(--gray);
     font-weight:800;
     letter-spacing:-0.2px;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
   }
   .tl-time-range{
     display:flex;
@@ -645,7 +662,7 @@
     color:var(--ink);
     background:transparent;
     padding:1px 0;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
   }
   .tl-time-range input:focus{ outline:none; border-color:var(--coral); }
   .tl-time-range .unit{
@@ -698,7 +715,7 @@
     font-weight:800;
     color:var(--ink);
     background:transparent;
-    font-family:'Noto Serif KR',serif;
+    font-family:'Noto Sans KR',sans-serif;
   }
   input.place:focus{ outline:none; border-color:var(--gold); }
   .tl-fields textarea.desc{
@@ -720,28 +737,29 @@
   .btn-wrap{
     text-align:center;
     margin-top:10px;
+    padding-bottom:6px;
   }
   #pdfBtn{
     background:linear-gradient(120deg, var(--coral), var(--gold));
     color:#fff;
     border:none;
-    padding:7px 22px;
-    font-size:12.5px;
+    padding:6px 16px;
+    font-size:11.5px;
     font-weight:700;
     font-family:'Noto Sans KR',sans-serif;
-    letter-spacing:2px;
+    letter-spacing:1px;
     text-transform:uppercase;
     border-radius:30px;
     cursor:pointer;
     box-shadow:0 10px 22px -10px rgba(255,90,110,0.6);
   }
   #driveBtn{
-    margin-right:10px;
+    margin-right:8px;
     background:linear-gradient(120deg, var(--navy), var(--navy-soft));
     color:#fff;
     border:none;
-    padding:7px 20px;
-    font-size:12.5px;
+    padding:6px 15px;
+    font-size:11.5px;
     font-weight:700;
     font-family:'Noto Sans KR',sans-serif;
     letter-spacing:1px;
@@ -797,19 +815,19 @@
       max-width:100%;
       box-shadow:none;
       zoom:1 !important;
-      padding-bottom:0;
+      padding:6px;
     }
-    .sheet::before{height:8px;}
-    .sheet::after{height:8px;margin-top:0;}
-    .sheet > section, .sheet > .btn-wrap{ padding-left:4mm; padding-right:4mm; }
+    .sheet-inner{padding-bottom:0;}
+    .sheet-inner > section, .sheet-inner > .btn-wrap{ padding-left:4mm; padding-right:4mm; }
     .btn-wrap{display:none;}
     .modal-back{display:none !important;}
     .photo-actions{display:none;}
-    section{margin-bottom:4px;padding-top:3px;}
-    section:first-of-type{margin-bottom:14px;}
+    .ticket-perforation{margin-bottom:8px;}
+    section{margin-bottom:18px;padding-top:3px;}
+    section:first-of-type{margin-bottom:18px;}
     .header-row{margin-bottom:9px;padding:4px 4mm 8px;}
     .header-row .info-row{position:absolute;right:4mm;top:5px;}
-    .header-row{min-height:64px;box-sizing:border-box;}
+    .header-row{min-height:78px;box-sizing:border-box;}
     .header-title{padding:0 150px;}
     .header-row::before{font-size:8.5px;letter-spacing:1.8px;top:6px;left:4mm;}
     .header-title{font-size:23px;margin-top:0;}
@@ -820,14 +838,13 @@
     .info-row input, .info-row .fixed-value{font-size:10.5px;width:95px;padding:0 2px;line-height:1.2;}
     .info-row input::placeholder{font-size:10px;}
     .step-title{margin-bottom:5px;}
-    .step-num{width:20px;height:20px;font-size:11px;}
-    .step-title h2{font-size:14.5px;}
+    .step-num{width:24px;height:24px;font-size:13.5px;}
+    .step-title h2{font-size:15.5px;}
     .step-desc{font-size:10px;margin:0 0 6px 34px;}
     .city-overview{gap:10px;}
     .map-col{ flex:0 0 48%; max-width:48%; }
     .pick-row{margin-bottom:3px;gap:5px;}
     .pick-label{flex-basis:44px;font-size:9.5px;padding-top:1px;white-space:nowrap;}
-    .pick-select, .city-big-title{background-image:none;}
     .pick-select{font-size:11px;padding:2px 6px;}
     .pick-pair{gap:3px;}
     .pick-pair .pick-label{flex:0 0 auto;}
@@ -839,16 +856,18 @@
     .feature-tag{font-size:10.5px;padding-top:1px;}
     .feature-box textarea{height:32px;font-size:10px;}
     .country-map-box{--m:4px;}
-    .city-label{font-size:9px;padding:1px 5px;}
+    .city-label{font-size:11.5px;padding:2px 8px;}
     .city-dot{width:6px;height:6px;border-width:1px;box-shadow:0 0 0 0.8px #1B2A6B;}
 
     .timeline{gap:0;padding-left:0;}
     .timeline::before{ left:22px; }
-    .tl-item{padding:3px 7px;margin-bottom:8px;grid-template-columns:28px 158px 1fr;}
+    .tl-item{padding:3px 7px;margin-bottom:8px;grid-template-columns:28px 300px 1fr;}
+    .tl-label-col{flex-direction:row;align-items:center;gap:8px;padding-top:0;}
+    .tl-label-col input.place{flex:1 1 0;min-width:0;width:auto;margin-bottom:0;}
+    .tl-label-col .tl-time-range{flex:0 0 auto;flex-wrap:nowrap;}
     .tl-icon::before{width:21px;height:21px;}
     .tl-icon{font-size:12.5px;}
     .tl-label{font-size:12.5px;}
-    .tl-label-col{gap:3px;}
     .tl-time-range{padding:2px 4px;font-size:8.5px;gap:1px;}
     .tl-time-range input{width:14px;font-size:9.5px;}
     .tl-time-range .unit{font-size:8px;margin:0 1px;}
@@ -865,13 +884,12 @@
     .lm-card .photo-box span{font-size:8.5px;}
     .lm-card input.lm-name{font-size:10.5px;padding:1px 2px;}
     .lm-card textarea{height:28px;font-size:9px;padding:3px 4px;}
-    input,textarea{border-color:#bbb !important;}
   }
 </style>
 </head>
 <body>
 
-<div class="sheet">
+<div class="sheet"><div class="sheet-inner">
   <div class="header-row">
     <h1 class="header-title">나만의 세계 도시 버스 투어 기획서</h1>
     <div class="info-row">
@@ -889,27 +907,25 @@
     <div class="city-overview">
       <div class="city-info-col">
         <div class="pick-row">
-          <div class="pick-pair"><span class="pick-label">① 대륙</span>
-            <select id="contSelect" class="pick-select" required onchange="selectContinent(this.value)">
-              <option value="" disabled selected>대륙 선택</option>
+          <div class="pick-pair">            <select id="contSelect" class="pick-select" required onchange="selectContinent(this.value)">
+              <option value="" disabled selected>대륙을 선택하세요</option>
             </select></div>
-          <div class="pick-pair"><span class="pick-label">② 국가</span>
-            <select id="countrySelect" class="pick-select" required disabled onchange="selectCountry(this.value)">
-              <option value="" disabled selected>국가 선택</option>
+          <div class="pick-pair">            <select id="countrySelect" class="pick-select" required disabled onchange="selectCountry(this.value)">
+              <option value="" disabled selected>국가를 선택하세요</option>
             </select></div>
         </div>
         <div class="city-line">
-          <span class="country-tag" id="countryTag">③ 도시</span>
+          <span class="country-tag" id="countryTag"></span>
           <select id="citySelect" class="city-big-title" required disabled onchange="selectCity(this.value)">
-            <option value="" disabled selected>국가를 먼저 선택하세요</option>
+            <option value="" disabled selected>도시를 선택하세요</option>
           </select>
         </div>
         <div class="feature-box">
-          <span class="feature-tag">🗣️ 언어</span>
+          <span class="feature-tag">(1) 🗣️ 언어</span>
           <textarea placeholder="이 도시에서 사용하는 언어를 조사해서 적어보세요"></textarea>
         </div>
         <div class="feature-box">
-          <span class="feature-tag">☀️ 기후</span>
+          <span class="feature-tag">(2) ☀️ 기후</span>
           <textarea placeholder="이 도시의 기후를 조사해서 적어보세요"></textarea>
         </div>
       </div>
@@ -917,22 +933,25 @@
         <div class="map-placeholder">대륙과 국가를 선택하면<br>나라 모양과 도시 위치가 나타납니다.</div>
       </div>
     </div>
-    <div class="lm-title">📍 꼭 방문해야 하는 랜드마크 3곳</div>
+  </section>
+
+  <!-- STEP 2 : 랜드마크 -->
+  <section>
+    <div class="step-title"><div class="step-num">2</div><h2 id="lmHeading">📍 도시에서 꼭 방문해야 하는 랜드마크</h2></div>
     <div class="lm-grid" id="landmarkArea"></div>
   </section>
 
   <!-- STEP 2 : 타임라인 -->
   <section>
-    <div class="step-title"><div class="step-num">2</div><h2>하루 투어 타임라인 (오전 8시 ~ 오후 8시)</h2></div>
-    <p class="step-desc">집합 장소에서 출발해 점심·저녁 식사를 포함한 하루 일정을 계획하고, 일정마다 활동 내용을 적어 보세요.</p>
+    <div class="step-title"><div class="step-num">3</div><h2 id="tlHeading">도시 투어 세부 일정 (오전 8시 ~ 오후 8시)</h2></div>
     <div class="timeline" id="timelineArea"></div>
   </section>
 
   <div class="btn-wrap">
-    <button id="driveBtn" onclick="submitToDrive()">☁️ 구글 드라이브로 제출하기</button>
-    <button id="pdfBtn" onclick="window.print()">📄 PDF로 저장하기 (A4 1페이지)</button>
+    <button id="driveBtn" onclick="submitToDrive()">☁️ 선생님 구글 드라이브로 제출하기</button>
+    <button id="pdfBtn" onclick="window.print()">📄 PDF로 저장하기</button>
   </div>
-</div>
+</div></div>
 
 <div class="modal-back" id="modalBack">
   <div class="modal-box" id="modalBox">
@@ -967,24 +986,31 @@ MAPDATA.continents.forEach((c, i)=>{
   contSelect.appendChild(o);
 });
 
+function setLmTitle(name){
+  document.getElementById('lmHeading').textContent = '📍 ' + (name || '도시') + '에서 꼭 방문해야 하는 랜드마크';
+  document.getElementById('tlHeading').textContent = (name || '도시') + ' 투어 세부 일정 (오전 8시 ~ 오후 8시)';
+}
+
 function selectContinent(i){
-  resetSelect(countrySelect, '국가 선택', false);
+  resetSelect(countrySelect, '국가를 선택하세요', false);
   MAPDATA.continents[i].countries.forEach(iso=>{
     const o = document.createElement('option');
     o.value = iso; o.textContent = MAPDATA.countries[iso].ko;
     countrySelect.appendChild(o);
   });
   curIso = null;
-  countryTag.textContent = '③ 도시';
-  resetSelect(citySelect, '국가를 먼저 선택하세요', true);
+  setLmTitle('');
+  countryTag.textContent = '';
+  resetSelect(citySelect, '도시를 선택하세요', true);
   mapArea.innerHTML = PLACEHOLDER_HTML;
 }
 
 function selectCountry(iso){
   curIso = iso;
   const c = MAPDATA.countries[iso];
+  setLmTitle('');
   countryTag.textContent = c.ko + '의';
-  resetSelect(citySelect, '이곳을 클릭해 도시를 선택하세요', false);
+  resetSelect(citySelect, '도시를 선택하세요', false);
   c.cities.forEach((ct, i)=>{
     const o = document.createElement('option');
     o.value = i; o.textContent = ct[0];
@@ -993,7 +1019,7 @@ function selectCountry(iso){
   renderMap(null);
 }
 
-function selectCity(i){ renderMap(MAPDATA.countries[curIso].cities[i]); }
+function selectCity(i){ const ct = MAPDATA.countries[curIso].cities[i]; renderMap(ct); setLmTitle(ct[0]); }
 
 function ringsOf(d){
   return d.split('M').filter(Boolean).map(seg=>seg.replace('Z','').split('L').map(p=>{ const q=p.trim().split(' '); return [+q[0], +q[1]]; }));
@@ -1036,6 +1062,25 @@ function renderMap(city){
 }
 
 // 도시 점에서 가장 짧은 화살표로, 나라 영토를 가리지 않는 여백에 이름표를 놓는다 (방향 자유)
+function segHitsRect(ax, ay, bx, by, x0, y0, x1, y1){
+  let t0 = 0, t1 = 1; const dx = bx - ax, dy = by - ay;
+  const P = [-dx, dx, -dy, dy], Q = [ax - x0, x1 - ax, ay - y0, y1 - ay];
+  for(let i = 0; i < 4; i++){
+    if(P[i] === 0){ if(Q[i] < 0) return false; }
+    else { const t = Q[i] / P[i]; if(P[i] < 0){ if(t > t1) return false; if(t > t0) t0 = t; } else { if(t < t0) return false; if(t < t1) t1 = t; } }
+  }
+  return true;
+}
+function rectHitsPoly(cx, cy, w, h, rings){       // 지명 상자가 국가 영토와 조금이라도 겹치는지
+  const x0 = cx - w / 2, x1 = cx + w / 2, y0 = cy - h / 2, y1 = cy + h / 2;
+  if(pip(cx, cy, rings)) return true;
+  for(const r of rings){
+    for(let i = 0, j = r.length - 1; i < r.length; j = i++){
+      if(segHitsRect(r[j][0], r[j][1], r[i][0], r[i][1], x0, y0, x1, y1)) return true;
+    }
+  }
+  return false;
+}
 function placeCityLabel(city, rings, vx, vy, vw, vh){
   const box = mapArea.querySelector('.country-map-box'), inner = mapArea.querySelector('.map-inner'), lab = mapArea.querySelector('.city-label');
   const line = document.getElementById('leader');
@@ -1051,22 +1096,30 @@ function placeCityLabel(city, rings, vx, vy, vw, vh){
   for(let a = 0; a < 360; a += 15){
     const cs = Math.cos(a * Math.PI / 180), sn = Math.sin(a * Math.PI / 180);
     const sx = cs > 0.3 ? 1 : cs < -0.3 ? -1 : 0, sy = sn > 0.3 ? 1 : sn < -0.3 ? -1 : 0;
-    for(let L = 14; L <= 160; L += 4){
+    for(let L = 12; L <= 260; L += 3){
       if(best && L >= best.cost) break;
       const ex = px + L * cs, ey = py + L * sn;
       if(pip(ex, ey, rings)) continue;
       const cx = ex + sx * lw / 2, cy = ey + sy * lh / 2;
-      let bad = 0;
-      for(let i = 0; i <= 6 && !bad; i++) for(let j = 0; j <= 2; j++){
-        const qx = cx - lw / 2 + lw * i / 6, qy = cy - lh / 2 + lh * j / 2;
-        if(qx < reg.x0 || qx > reg.x1 || qy < reg.y0 || qy > reg.y1 || pip(qx, qy, rings)){ bad = 1; break; }
-      }
-      if(bad) continue;
+      if(cx - lw / 2 < reg.x0 || cx + lw / 2 > reg.x1 || cy - lh / 2 < reg.y0 || cy + lh / 2 > reg.y1) continue;
+      if(rectHitsPoly(cx, cy, lw + 2, lh + 2, rings)) continue;
       if(!best || L < best.cost) best = { cost: L, ex, ey, cx, cy };
       break;
     }
   }
-  if(!best){   // 알맞은 빈 곳이 없으면 가장 가까운 위쪽 바깥으로
+  if(!best){   // 방향 탐색 실패 시: 여백 전체를 격자로 훑어 가장 가까운 빈 자리 선택
+    let bd = 1e9;
+    for(let cy = reg.y0 + lh / 2; cy <= reg.y1 - lh / 2; cy += 3){
+      for(let cx = reg.x0 + lw / 2; cx <= reg.x1 - lw / 2; cx += 3){
+        const d = Math.hypot(cx - px, cy - py);
+        if(d >= bd) continue;
+        if(rectHitsPoly(cx, cy, lw + 2, lh + 2, rings)) continue;
+        bd = d;
+        best = { cost: d, cx, cy, ex: Math.max(cx - lw / 2, Math.min(cx + lw / 2, px)), ey: Math.max(cy - lh / 2, Math.min(cy + lh / 2, py)) };
+      }
+    }
+  }
+  if(!best){
     const up = py < vy + vh / 2;
     best = { cost: 0, ex: px, ey: up ? vy + 1 : vy + vh - 1, cx: px, cy: up ? vy - lh / 2 : vy + vh + lh / 2 };
   }
@@ -1088,8 +1141,8 @@ function previewPhoto(input, boxId, label){
       box.innerHTML = `
         <img src="${e.target.result}">
         <div class="photo-actions">
-          <button type="button" class="photo-btn" onclick="event.stopPropagation(); document.getElementById('${input.id}').click();">🔄</button>
-          <button type="button" class="photo-btn danger" onclick="event.stopPropagation(); removePhoto('${input.id}', '${boxId}', '${label}');">🗑</button>
+          <button type="button" class="photo-btn" onclick="event.stopPropagation(); document.getElementById('${input.id}').click();">🔄 사진 변경</button>
+          <button type="button" class="photo-btn danger" onclick="event.stopPropagation(); removePhoto('${input.id}', '${boxId}', '${label}');">🗑 사진 삭제</button>
         </div>`;
     };
     reader.readAsDataURL(input.files[0]);
@@ -1110,19 +1163,19 @@ for(let i=0;i<3;i++){
   card.className = 'lm-card';
   card.innerHTML = `
     <input type="text" class="lm-name" placeholder="랜드마크의 명칭을 입력하세요">
-    <div class="photo-box" id="lmBox${i}" onclick="document.getElementById('lmPhoto${i}').click()"><span>📷 랜드마크 ${i+1} 사진</span></div>
-    <input type="file" id="lmPhoto${i}" accept="image/*" style="display:none;" onchange="previewPhoto(this,'lmBox${i}','📷 랜드마크 ${i+1} 사진')">
-    <textarea placeholder="간단한 설명을 적어보세요"></textarea>`;
+    <div class="photo-box" id="lmBox${i}" onclick="document.getElementById('lmPhoto${i}').click()"><span>📷 랜드마크의 사진을 이미지 파일로 첨부하세요</span></div>
+    <input type="file" id="lmPhoto${i}" accept="image/*" style="display:none;" onchange="previewPhoto(this,'lmBox${i}','📷 랜드마크의 사진을 이미지 파일로 첨부하세요')">
+    <textarea placeholder="위의 랜드마크에 대한 설명을 작성하세요."></textarea>`;
   landmarkArea.appendChild(card);
 }
 
 // ---------- 타임라인 6개 항목 생성 (일정별 사진 첨부 포함) ----------
 const timelineData = [
-  {icon:'🚌', label:'오전 일정', startH:'08', startM:'00', endH:'', endM:'', placeholder1:'점심 전 방문 장소', placeholder2:'활동 내용'},
-  {icon:'🍽️', label:'점심식사', startH:'', startM:'', endH:'', endM:'', placeholder1:'점심 식당/장소', placeholder2:'메뉴 또는 특징', meal:true},
-  {icon:'🚌', label:'오후 일정', startH:'', startM:'', endH:'', endM:'', placeholder1:'점심 후 방문 장소', placeholder2:'활동 내용'},
-  {icon:'🍽️', label:'저녁식사', startH:'', startM:'', endH:'', endM:'', placeholder1:'저녁 식당/장소', placeholder2:'메뉴 또는 특징', meal:true},
-  {icon:'🌙', label:'저녁 일정', startH:'', startM:'', endH:'20', endM:'00', placeholder1:'저녁 후 방문 장소', placeholder2:'활동 내용 및 마무리'}
+  {icon:'🚌', label:'오전 일정', startH:'08', startM:'00', endH:'', endM:'', placeholder1:'오전 일정 내용 입력', placeholder2:'활동 내용'},
+  {icon:'🍽️', label:'점심식사', startH:'', startM:'', endH:'', endM:'', placeholder1:'점심 식사 요리 입력', placeholder2:'메뉴 또는 특징', meal:true},
+  {icon:'🚌', label:'오후 일정', startH:'', startM:'', endH:'', endM:'', placeholder1:'오후 일정 내용 입력', placeholder2:'활동 내용'},
+  {icon:'🍽️', label:'저녁식사', startH:'', startM:'', endH:'', endM:'', placeholder1:'저녁 식사 요리 입력', placeholder2:'메뉴 또는 특징', meal:true},
+  {icon:'🌙', label:'저녁 일정', startH:'', startM:'', endH:'20', endM:'00', placeholder1:'저녁 일정 내용 입력', placeholder2:'활동 내용 및 마무리'}
 ];
 const timelineArea = document.getElementById('timelineArea');
 timelineData.forEach((item, idx)=>{
@@ -1133,7 +1186,7 @@ timelineData.forEach((item, idx)=>{
   row.innerHTML = `
     <div class="tl-icon">${item.icon}</div>
     <div class="tl-label-col">
-      <div class="tl-label">${item.label}</div>
+      ${placeInputHtml}
       <div class="tl-time-range">
         <div class="time-line">
           <input type="text" maxlength="2" value="${item.startH}" placeholder="00"><span class="unit">시</span>
@@ -1146,7 +1199,6 @@ timelineData.forEach((item, idx)=>{
         </div>
       </div>
       ${placeLabelHtml}
-      ${placeInputHtml}
     </div>
     <div class="tl-fields">
       <div class="tl-fields-row">
@@ -1611,7 +1663,7 @@ function buildPdfModeStyles(){
     }
     body.pdf-mode.capturing .btn-wrap, body.pdf-mode.capturing .photo-actions{display:none !important;}
     body.pdf-mode.capturing .sheet{box-shadow:none !important;margin:0 !important;}
-    body.pdf-mode.capturing .header-row{min-height:80px !important;}`;
+    body.pdf-mode.capturing .header-row{min-height:94px !important;}`;
   document.head.appendChild(st);
 }
 buildPdfModeStyles();
