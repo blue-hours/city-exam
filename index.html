@@ -823,8 +823,8 @@
     .modal-back{display:none !important;}
     .photo-actions{display:none;}
     .ticket-perforation{margin-bottom:8px;}
-    section{margin-bottom:18px;padding-top:3px;}
-    section:first-of-type{margin-bottom:18px;}
+    section{margin-bottom:12px;padding-top:3px;}
+    section:first-of-type{margin-bottom:12px;}
     .header-row{margin-bottom:9px;padding:4px 4mm 8px;}
     .header-row .info-row{position:absolute;right:4mm;top:5px;}
     .header-row{min-height:78px;box-sizing:border-box;}
@@ -854,14 +854,14 @@
     .feature-box{padding:5px 6px;margin-bottom:5px;gap:5px;}
     .feature-box:last-child{margin-bottom:0;}
     .feature-tag{font-size:10.5px;padding-top:1px;}
-    .feature-box textarea{height:32px;font-size:10px;}
+    .feature-box textarea{height:62px;font-size:10px;}
     .country-map-box{--m:4px;}
     .city-label{font-size:11.5px;padding:2px 8px;}
     .city-dot{width:6px;height:6px;border-width:1px;box-shadow:0 0 0 0.8px #1B2A6B;}
 
     .timeline{gap:0;padding-left:0;}
     .timeline::before{ left:22px; }
-    .tl-item{padding:3px 7px;margin-bottom:8px;grid-template-columns:28px 300px 1fr;}
+    .tl-item{padding:3px 7px;margin-bottom:8px;grid-template-columns:28px 322px 1fr;align-items:center;}
     .tl-label-col{flex-direction:row;align-items:center;gap:8px;padding-top:0;}
     .tl-label-col input.place{flex:1 1 0;min-width:0;width:auto;margin-bottom:0;}
     .tl-label-col .tl-time-range{flex:0 0 auto;flex-wrap:nowrap;}
@@ -873,17 +873,17 @@
     .tl-time-range .unit{font-size:8px;margin:0 1px;}
     .tl-time-range .tilde{font-size:9px;}
     .place-label{font-size:9.5px;margin-bottom:2px;}
-    input.place{font-size:13px;margin-bottom:3px;}
+    input.place{font-size:9px;margin-bottom:3px;}
     .tl-fields-row{gap:5px;}
     .tl-fields textarea.desc{font-size:9.5px;}
-    .tl-fields textarea.desc{min-height:0;}
+    .tl-fields textarea.desc{min-height:60px;}
     .lm-title{margin:8px 0 4px;font-size:11px;}
     .lm-grid{gap:7px;}
     .lm-card{padding:4px;gap:3px;}
     .lm-card .photo-box{aspect-ratio:16/9;}
     .lm-card .photo-box span{font-size:8.5px;}
     .lm-card input.lm-name{font-size:10.5px;padding:1px 2px;}
-    .lm-card textarea{height:28px;font-size:9px;padding:3px 4px;}
+    .lm-card textarea{height:58px;font-size:9px;padding:3px 4px;}
   }
 </style>
 </head>
@@ -891,7 +891,7 @@
 
 <div class="sheet"><div class="sheet-inner">
   <div class="header-row">
-    <h1 class="header-title">나만의 세계 도시 버스 투어 기획서</h1>
+    <h1 class="header-title" id="docTitle">나만의 세계 도시 버스 투어 기획서</h1>
     <div class="info-row">
       <div><label>학교</label><span class="fixed-value">오마중학교</span></div>
       <div><label>학번</label><input type="text" id="stuId" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="숫자 5자리" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
@@ -949,7 +949,7 @@
 
   <div class="btn-wrap">
     <button id="driveBtn" onclick="submitToDrive()">☁️ 선생님 구글 드라이브로 제출하기</button>
-    <button id="pdfBtn" onclick="window.print()">📄 PDF로 저장하기</button>
+    <button id="pdfBtn" onclick="saveToDesktop()">📄 바탕화면에 PDF로 저장하기</button>
   </div>
 </div></div>
 
@@ -986,7 +986,23 @@ MAPDATA.continents.forEach((c, i)=>{
   contSelect.appendChild(o);
 });
 
+let curCityName = '';
+function updateDocTitle(){
+  const nm = (document.getElementById('stuName').value || '').trim();
+  const t = document.getElementById('docTitle');
+  t.textContent = (nm ? nm + '의' : '나만의') + ' ' + (curCityName || '세계 도시') + ' 버스 투어 기획서';
+  t.style.whiteSpace = 'nowrap'; t.style.fontSize = '';
+  const cs = getComputedStyle(t);
+  const avail = t.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  const rg = document.createRange(); rg.selectNodeContents(t);
+  let fs = parseFloat(cs.fontSize);
+  while(rg.getBoundingClientRect().width / (parseFloat(t.parentElement.closest('.sheet').style.zoom) || 1) > avail && fs > 12){ fs -= 0.5; t.style.fontSize = fs + 'px'; }
+}
+document.getElementById('stuName').addEventListener('input', updateDocTitle);
+
 function setLmTitle(name){
+  curCityName = name || '';
+  updateDocTitle();
   document.getElementById('lmHeading').textContent = '📍 ' + (name || '도시') + '에서 꼭 방문해야 하는 랜드마크';
   document.getElementById('tlHeading').textContent = (name || '도시') + ' 투어 세부 일정 (오전 8시 ~ 오후 8시)';
 }
@@ -1171,11 +1187,11 @@ for(let i=0;i<3;i++){
 
 // ---------- 타임라인 6개 항목 생성 (일정별 사진 첨부 포함) ----------
 const timelineData = [
-  {icon:'🚌', label:'오전 일정', startH:'08', startM:'00', endH:'', endM:'', placeholder1:'오전 일정 내용 입력', placeholder2:'활동 내용'},
-  {icon:'🍽️', label:'점심식사', startH:'', startM:'', endH:'', endM:'', placeholder1:'점심 식사 요리 입력', placeholder2:'메뉴 또는 특징', meal:true},
-  {icon:'🚌', label:'오후 일정', startH:'', startM:'', endH:'', endM:'', placeholder1:'오후 일정 내용 입력', placeholder2:'활동 내용'},
-  {icon:'🍽️', label:'저녁식사', startH:'', startM:'', endH:'', endM:'', placeholder1:'저녁 식사 요리 입력', placeholder2:'메뉴 또는 특징', meal:true},
-  {icon:'🌙', label:'저녁 일정', startH:'', startM:'', endH:'20', endM:'00', placeholder1:'저녁 일정 내용 입력', placeholder2:'활동 내용 및 마무리'}
+  {icon:'🚌', label:'오전 일정', startH:'08', startM:'00', endH:'', endM:'', placeholder1:'오전에 방문할 랜드마크를 입력하세요', placeholder2:'자세한 활동 내용을 입력하세요'},
+  {icon:'🍽️', label:'점심식사', startH:'', startM:'', endH:'', endM:'', placeholder1:'점심 식사에 제공할 요리의 명칭을 입력하세요', placeholder2:'메뉴의 특징을 입력하세요', meal:true},
+  {icon:'🚌', label:'오후 일정', startH:'', startM:'', endH:'', endM:'', placeholder1:'오후에 방문할 랜드마크를 입력하세요', placeholder2:'자세한 활동 내용을 입력하세요'},
+  {icon:'🍽️', label:'저녁식사', startH:'', startM:'', endH:'', endM:'', placeholder1:'저녁 식사에 제공할 요리의 명칭을 입력하세요', placeholder2:'메뉴의 특징을 입력하세요', meal:true},
+  {icon:'🌙', label:'저녁 일정', startH:'', startM:'', endH:'20', endM:'00', placeholder1:'저녁에 방문할 랜드마크를 입력하세요', placeholder2:'활동 내용과 마무리를 입력하세요'}
 ];
 const timelineArea = document.getElementById('timelineArea');
 timelineData.forEach((item, idx)=>{
@@ -1716,7 +1732,14 @@ async function makePdfBlobBase64(){
   sheetEl.style.zoom = 1;
   document.body.classList.add('capturing');
   await new Promise(r=>setTimeout(r, 150));
+  // A4 한 장의 위·아래 여백이 같아지도록, 남는 세로 공간을 섹션 사이 간격에 나눠 준다
+  const gapEls = [...document.querySelectorAll('.sheet-inner > section')].slice(0, 2);
+  const gapBase = gapEls.map(el => parseFloat(getComputedStyle(el).marginBottom) || 0);
   try{
+    const sh = document.querySelector('.sheet');
+    const extra = sh.offsetWidth * (285 / 198) - sh.offsetHeight - 3;
+    if(extra > 0){ gapEls.forEach((el, i) => { el.style.marginBottom = (gapBase[i] + extra / gapEls.length) + 'px'; }); }
+    await new Promise(r=>setTimeout(r, 50));
     const sheet = document.querySelector('.sheet');
     const canvas = await html2canvas(sheet, { scale:3, backgroundColor:'#ffffff', useCORS:true, logging:false, onclone:replaceControlsWithText });
     const { jsPDF } = window.jspdf;
@@ -1727,6 +1750,7 @@ async function makePdfBlobBase64(){
     pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', (pw - w)/2, m, w, hgt);
     return pdf.output('datauristring').split(',')[1];
   } finally {
+    gapEls.forEach(el => { el.style.marginBottom = ''; });
     document.getElementById('submitRow').style.display = 'none';
     document.body.classList.remove('capturing');
     fitSheet();
@@ -1743,6 +1767,46 @@ function showModal(msg, kind){
   document.getElementById('modalBack').classList.add('show');
 }
 function closeModal(){ document.getElementById('modalBack').classList.remove('show'); }
+
+async function saveToDesktop(){
+  const btn = document.getElementById('pdfBtn');
+  const id = document.getElementById('stuId').value.trim();
+  const nm = document.getElementById('stuName').value.trim();
+  if(!/^[0-9]{5}$/.test(id)){ showModal('학번은 숫자 5자리로 입력해 주세요.', 'err'); return; }
+  if(!/^[가-힣]+$/.test(nm)){ showModal('이름은 한글로만 입력해 주세요.', 'err'); return; }
+  const fileName = (id + nm).replace(/[\\/:*?"<>|\s]/g, '') + '.pdf';
+  // 저장 창은 버튼을 누른 직후에만 열 수 있어서, PDF를 만들기 전에 먼저 연다 (시작 위치: 바탕화면)
+  let handle = null;
+  if(window.showSaveFilePicker){
+    try{
+      handle = await window.showSaveFilePicker({ suggestedName:fileName, startIn:'desktop',
+        types:[{ description:'PDF 파일', accept:{ 'application/pdf':['.pdf'] } }] });
+    }catch(e){
+      if(e && e.name === 'AbortError') return;     // 저장 창에서 취소
+      handle = null;                                // 지원되지 않으면 일반 내려받기로
+    }
+  }
+  btn.disabled = true; showModal('PDF를 만들고 있어요… 잠시만 기다려 주세요.', 'wait');
+  try{
+    const b64 = await makePdfBlobBase64();
+    const bin = atob(b64), arr = new Uint8Array(bin.length);
+    for(let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    const blob = new Blob([arr], { type:'application/pdf' });
+    if(handle){
+      const w = await handle.createWritable(); await w.write(blob); await w.close();
+      showModal('✅ 저장했어요! (' + fileName + ')\n저장 위치가 바탕화면인지 확인해 주세요.', 'ok');
+    }else{
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = fileName;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 10000);
+      showModal('✅ ' + fileName + ' 파일을 저장했어요.\n이 브라우저는 바탕화면에 바로 저장할 수 없어서 \'다운로드\' 폴더에 저장돼요.', 'ok');
+    }
+  }catch(e){
+    showModal('PDF를 저장하는 중 오류가 났어요: ' + (e && e.message ? e.message : e), 'err');
+  }
+  btn.disabled = false;
+}
 
 async function submitToDrive(){
   const status = document.getElementById('driveStatus');
