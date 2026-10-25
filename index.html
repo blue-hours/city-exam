@@ -239,6 +239,8 @@
   section .city-line{ border-radius:6px; }
   section .country-tag{ border-radius:6px 0 0 6px !important; }
   section .city-big-title{ border-radius:0 6px 6px 0 !important; }
+  section .country-tag:empty + .city-big-title{ border-radius:6px !important; }
+  section .country-tag{ background:#DCEEFF !important; color:#000 !important; }
   /* 작성칸 테두리: 섹션 테마색, 조금 두껍게 */
   section .pick-select, section .city-big-title, section .country-tag,
   section .feature-box, section .country-map-box, section .map-placeholder,
@@ -385,8 +387,8 @@
     padding-top:2px;
     white-space:nowrap;
   }
-  section .feature-tag{ background:#DCEEFF; border:2px solid #2F6FED; color:#2F6FED !important; font-weight:900; border-radius:6px; padding:6px 12px !important; align-self:center; }
-  @media print{ section .feature-tag{ padding:5px 11px !important; font-size:10.5px; line-height:1.2; } .ft-ic{ font-size:17px; vertical-align:middle; line-height:1; } }
+  section .feature-tag{ background:var(--stone); border:2px solid #2F6FED; color:#2F6FED !important; font-weight:900; border-radius:6px; padding:6px 12px 6px 7px !important; align-self:center; } .ft-ic{ margin-right:0; }
+  @media print{ section .feature-tag{ padding:5px 11px 5px 6px !important; font-size:10.5px; line-height:1.2; } .ft-ic{ font-size:17px; vertical-align:middle; line-height:1; } }
   .feature-box textarea{
     flex:1;
     border:none;
@@ -499,6 +501,7 @@
     height:100%;
     object-fit:cover;
   }
+  .lm-card .photo-box span.cam{ display:block; font-size:34px; line-height:1.15; margin-bottom:4px; }
   .photo-box span, .tl-photo-box span{
     font-size:13px;
     color:var(--navy);
@@ -942,6 +945,7 @@
     .lm-card{padding:4px;gap:3px;}
     .lm-card .photo-box{aspect-ratio:16/9;}
     .lm-card .photo-box span{font-size:8.5px;}
+    .lm-card .photo-box span.cam{font-size:26px;}
     .lm-card input.lm-name{font-size:11px;padding:6px 3px;}
     .lm-card textarea{height:44px;font-size:9px;padding:3px 4px;}
   }
@@ -981,7 +985,7 @@
           </select>
         </div>
         <div class="feature-box">
-          <span class="feature-tag"><span class="ft-ic">🗣️</span> 언어</span>
+          <span class="feature-tag"><span class="ft-ic">🌐</span> 언어</span>
           <textarea placeholder="이 도시에서 주로 사용하는 언어를 조사해서 3줄 이내로 설명하세요."></textarea>
         </div>
         <div class="feature-box">
@@ -1322,12 +1326,13 @@ function previewPhoto(input, boxId, label){
     reader.readAsDataURL(input.files[0]);
   }
 }
+function camHtml(l){ return String(l).replace(/^📷\s*/, '<span class="cam">📷</span>'); }
 function removePhoto(inputId, boxId, label){
   const input = document.getElementById(inputId);
   const box = document.getElementById(boxId);
   input.value = '';
   box.classList.remove('has-photo');
-  box.innerHTML = `<span>${label}</span>`;
+  box.innerHTML = `<span>${camHtml(label)}</span>`;
 }
 
 // ---------- 랜드마크 3곳 ----------
@@ -1337,7 +1342,7 @@ for(let i=0;i<3;i++){
   card.className = 'lm-card';
   card.innerHTML = `
     <div class="lm-name-row"><span class="lm-pin">📍</span><input type="text" class="lm-name" placeholder="랜드마크의 명칭을 입력하세요."></div>
-    <div class="photo-box" id="lmBox${i}" onclick="document.getElementById('lmPhoto${i}').click()"><span>📷 랜드마크의 사진을 이미지 파일로 첨부하세요.</span></div>
+    <div class="photo-box" id="lmBox${i}" onclick="document.getElementById('lmPhoto${i}').click()"><span><span class="cam">📷</span>랜드마크의 사진을 이미지 파일로 첨부하세요.</span></div>
     <input type="file" id="lmPhoto${i}" accept="image/*" style="display:none;" onchange="previewPhoto(this,'lmBox${i}','📷 랜드마크의 사진을 이미지 파일로 첨부하세요.')">
     <textarea placeholder="위의 랜드마크에 대해 3줄 이내로 설명하세요."></textarea>`;
   landmarkArea.appendChild(card);
