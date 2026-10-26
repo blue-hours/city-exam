@@ -1067,7 +1067,7 @@ function updateDocTitle(){
   const avail = t.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
   const rg = document.createRange(); rg.selectNodeContents(t);
   let fs = parseFloat(cs.fontSize);
-  while(rg.getBoundingClientRect().width / (parseFloat(t.parentElement.closest('.sheet').style.zoom) || 1) > avail && fs > 12){ fs -= 0.5; t.style.fontSize = fs + 'px'; }
+  while(rg.getBoundingClientRect().width / (SHEET_Z || 1) > avail && fs > 12){ fs -= 0.5; t.style.fontSize = fs + 'px'; }
 }
 document.getElementById('stuName').addEventListener('input', updateDocTitle);
 
@@ -1854,14 +1854,36 @@ document.body.classList.add('pdf-mode');
 
 // 화면 너비에 맞춰 A4 레이아웃을 같은 비율로 확대/축소 (인쇄·PDF에서는 1배)
 const SHEET_PX = 198 * 96 / 25.4;
+let SHEET_Z = 1;
+// 사파리·태블릿에서 zoom 속성이 지도 크기·입력칸 글자 배치를 어긋나게 하므로 transform으로 화면 크기에 맞춘다
+function setSheetScale(z){
+  const sh = document.querySelector('.sheet');
+  SHEET_Z = z;
+  const avail = document.documentElement.clientWidth - 32;
+  sh.style.width = SHEET_PX + 'px';
+  sh.style.transformOrigin = 'top left';
+  sh.style.transform = 'scale(' + z + ')';
+  const ml = Math.max(0, (avail - SHEET_PX * z) / 2);
+  sh.style.setProperty('margin-left', ml + 'px', 'important');
+  sh.style.setProperty('margin-right', '0', 'important');
+  sh.style.setProperty('margin-bottom', (sh.offsetHeight * (z - 1)) + 'px', 'important');
+}
+function resetSheetScale(){
+  const sh = document.querySelector('.sheet');
+  SHEET_Z = 1;
+  sh.style.transform = 'none'; sh.style.width = '';
+  ['margin-left','margin-right','margin-bottom'].forEach(k=>sh.style.removeProperty(k));
+}
 function fitSheet(){
-  const z = Math.max(0.4, Math.min(1.5, (window.innerWidth - 32) / SHEET_PX));
-  document.querySelector('.sheet').style.zoom = z;
+  const z = Math.max(0.4, Math.min(1.5, (document.documentElement.clientWidth - 32) / SHEET_PX));
+  setSheetScale(z);
 }
 window.addEventListener('resize', fitSheet);
-window.addEventListener('beforeprint', ()=>{ document.querySelector('.sheet').style.zoom = 1; updateDocTitle(); });
+window.addEventListener('beforeprint', ()=>{ resetSheetScale(); updateDocTitle(); });
 window.addEventListener('afterprint', fitSheet);
 fitSheet();
+window.addEventListener('load', fitSheet);
+if(window.ResizeObserver){ new ResizeObserver(()=>{ if(document.body.classList.contains('pdf-mode')||document.body.classList.contains('capturing')) return; fitSheet(); }).observe(document.querySelector('.sheet-inner')); }
 
 // 입력칸·선택칸·글상자를 같은 모양의 일반 글자 상자로 바꿔 글자가 잘리지 않게 캡처
 function replaceControlsWithText(doc){
@@ -1903,7 +1925,7 @@ async function makePdfBlobBase64(){
   document.getElementById('submitTime').textContent = p;
   document.getElementById('submitRow').style.display = 'flex';
   const sheetEl = document.querySelector('.sheet');
-  sheetEl.style.zoom = 1;
+  resetSheetScale();
   document.body.classList.add('capturing');
   updateDocTitle();
   await new Promise(r=>setTimeout(r, 150));
