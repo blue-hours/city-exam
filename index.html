@@ -1921,7 +1921,7 @@ function replaceControlsWithText(doc){
 // 캡처용 복제본에서 사파리가 보안 오류를 내는 SVG 그림을 안전한 형태로 바꾼다
 function makeCloneSafe(doc, level){
   const sh = doc.querySelector('.sheet');
-  doc.querySelectorAll('*').forEach(el=>{
+  if(level > 0) doc.querySelectorAll('*').forEach(el=>{
     const bg = doc.defaultView.getComputedStyle(el).backgroundImage || '';
     if(bg.indexOf('data:image/svg') >= 0){
       el.style.backgroundImage = (el === sh)
@@ -1931,10 +1931,13 @@ function makeCloneSafe(doc, level){
   });
   doc.querySelectorAll('svg').forEach(sv=>{
     try{
-      const rc = sv.getBoundingClientRect(), vb = (sv.getAttribute('viewBox')||'').split(/\s+/).map(Number);
-      if(!rc.width || vb.length < 4) throw 0;
+      const vb = (sv.getAttribute('viewBox')||'').split(/[\s,]+/).map(Number);
+      if(vb.length < 4 || !(vb[2] > 0) || !(vb[3] > 0)) throw 0;
+      // 크기는 복제본이 아니라 실제 화면의 지도에서 읽는다 (사파리는 복제본 크기를 0으로 줄 때가 있음)
+      const og = document.querySelector('.map-inner svg'), orc = og ? og.getBoundingClientRect() : null;
+      const rc = { width: (orc && orc.width) || 400, height: (orc && orc.height) || 400 * vb[3] / vb[2] };
       // SVG를 그대로 쓰지 않고, 같은 그림을 캔버스에 직접 그려 일반 이미지로 바꾼다 (보안 오류 없음)
-      const K = 3, cv = doc.createElement('canvas'); cv.width = Math.round(rc.width * K); cv.height = Math.round(rc.height * K);
+      const K = 4, cv = doc.createElement('canvas'); cv.width = Math.round(rc.width * K); cv.height = Math.round(rc.height * K);
       const cx = cv.getContext('2d'), sx = cv.width / vb[2], sy = cv.height / vb[3];
       cx.setTransform(sx, 0, 0, sy, -vb[0] * sx, -vb[1] * sy);
       sv.querySelectorAll('path').forEach(pt=>{
@@ -1990,7 +1993,7 @@ async function makePdfBlobBase64(){
       try{
         stage = '캡처' + at.level;
         canvas = await html2canvas(sheet, { scale:at.scale, backgroundColor:'#ffffff', useCORS:true, logging:false,
-          onclone:(doc)=>{ replaceControlsWithText(doc); if(at.level > 0) makeCloneSafe(doc, at.level); } });
+          onclone:(doc)=>{ replaceControlsWithText(doc); makeCloneSafe(doc, at.level); } });
         stage = '변환' + at.level;
         jpeg = canvas.toDataURL('image/jpeg', 0.97);
         lastErr = null; break;
