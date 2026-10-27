@@ -1929,6 +1929,13 @@ function makeCloneSafe(doc, level){
         : 'none';
     }
   });
+  // 사파리는 복제 화면에서 컨테이너 단위(cqw/cqh)를 0으로 계산해 지도 크기가 사라질 수 있어, 실제 화면에서 잰 크기(px)를 그대로 지정한다
+  const mi = doc.querySelector('.map-inner');
+  if(mi && window.__mapDims){
+    mi.style.setProperty('width', window.__mapDims.w + 'px', 'important');
+    mi.style.setProperty('height', window.__mapDims.h + 'px', 'important');
+    mi.style.setProperty('flex', '0 0 auto', 'important');
+  }
   doc.querySelectorAll('svg').forEach(sv=>{
     if(window.__mapPng){
       const im = doc.createElement('img');
@@ -1997,6 +2004,7 @@ async function makePdfBlobBase64(){
     await new Promise(r=>setTimeout(r, 50));
     const sheet = document.querySelector('.sheet');
     // 사파리(아이패드 등)는 SVG 그림이 들어 있으면 캡처를 막는 경우가 있어, 오류가 나면 안전한 방식으로 단계별 재시도
+    window.__mapDims = null; try{ const mr = document.querySelector('.map-inner'); if(mr){ const q = mr.getBoundingClientRect(); if(q.width > 0 && q.height > 0) window.__mapDims = { w:q.width, h:q.height }; } }catch(_){}
     window.__mapPng = null; try{ window.__mapPng = renderMapPng(); }catch(_){ window.__mapPng = null; }
     let canvas = null, jpeg = null, lastErr = null, stage = '';
     const attempts = [ {level:0, scale:4}, {level:1, scale:4}, {level:2, scale:3}, {level:2, scale:2} ];
