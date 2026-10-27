@@ -1929,6 +1929,13 @@ function makeCloneSafe(doc, level){
         : 'none';
     }
   });
+  // html2canvas는 object-fit:cover를 지원하지 않아 사진이 칸에 맞춰 찌그러지므로, 비율을 유지하며 칸을 채우는 배경 그림으로 바꾼다
+  doc.querySelectorAll('.photo-box img, .tl-photo-box img').forEach(im=>{
+    const d = doc.createElement('div');
+    d.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;background-repeat:no-repeat;background-position:center center;background-size:cover;';
+    d.style.backgroundImage = 'url("' + im.getAttribute('src') + '")';
+    im.parentNode.replaceChild(d, im);
+  });
   // 사파리는 복제 화면에서 컨테이너 단위(cqw/cqh)를 0으로 계산해 지도 크기가 사라질 수 있어, 실제 화면에서 잰 크기(px)를 그대로 지정한다
   const mi = doc.querySelector('.map-inner');
   if(mi && window.__mapDims){
@@ -1937,12 +1944,9 @@ function makeCloneSafe(doc, level){
     mi.style.setProperty('flex', '0 0 auto', 'important');
   }
   doc.querySelectorAll('svg').forEach(sv=>{
-    if(window.__mapPng){
-      const im = doc.createElement('img');
-      im.src = window.__mapPng;
-      im.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;display:block;';
-      sv.parentNode.replaceChild(im, sv);
-    } else if(level > 0){ sv.style.display = 'none'; }
+    // 지도 그림은 캡처가 끝난 뒤 완성된 이미지 위에 직접 합성하므로, 복제 화면에서는 숨긴다
+    if(window.__mapPng && window.__mapRel){ sv.style.display = 'none'; }
+    else if(level > 0){ sv.style.display = 'none'; }
   });
 }
 // 실제 화면의 지도(SVG)를 캔버스에 직접 그려 PNG 그림으로 만든다 (사파리가 SVG를 이미지로 바꾸지 못하는 문제 우회)
@@ -2006,6 +2010,11 @@ async function makePdfBlobBase64(){
     // 사파리(아이패드 등)는 SVG 그림이 들어 있으면 캡처를 막는 경우가 있어, 오류가 나면 안전한 방식으로 단계별 재시도
     window.__mapDims = null; try{ const mr = document.querySelector('.map-inner'); if(mr){ const q = mr.getBoundingClientRect(); if(q.width > 0 && q.height > 0) window.__mapDims = { w:q.width, h:q.height }; } }catch(_){}
     window.__mapPng = null; try{ window.__mapPng = renderMapPng(); }catch(_){ window.__mapPng = null; }
+    window.__mapRel = null;
+    try{
+      const mr2 = document.querySelector('.map-inner'), sr2 = sheet.getBoundingClientRect();
+      if(window.__mapPng && mr2){ const q2 = mr2.getBoundingClientRect(); window.__mapRel = { x:(q2.left - sr2.left)/sr2.width, y:(q2.top - sr2.top)/sr2.height, w:q2.width/sr2.width, h:q2.height/sr2.height }; }
+    }catch(_){ window.__mapRel = null; }
     let canvas = null, jpeg = null, lastErr = null, stage = '';
     const attempts = [ {level:0, scale:4}, {level:1, scale:4}, {level:2, scale:3}, {level:2, scale:2} ];
     for(const at of attempts){
@@ -2013,6 +2022,16 @@ async function makePdfBlobBase64(){
         stage = '캡처' + at.level;
         canvas = await html2canvas(sheet, { scale:at.scale, backgroundColor:'#ffffff', useCORS:true, logging:false,
           onclone:(doc)=>{ replaceControlsWithText(doc); makeCloneSafe(doc, at.level); } });
+        if(window.__mapPng && window.__mapRel){
+          stage = '지도' + at.level;
+          const mimg = new Image(); mimg.src = window.__mapPng;
+          await new Promise((ok, no)=>{ mimg.onload = ok; mimg.onerror = ()=>no(new Error('지도 그림 불러오기 실패')); });
+          const g = canvas.getContext('2d'), R = window.__mapRel;
+          g.save(); g.setTransform(1, 0, 0, 1, 0, 0);
+          g.globalCompositeOperation = 'darken';
+          g.drawImage(mimg, R.x * canvas.width, R.y * canvas.height, R.w * canvas.width, R.h * canvas.height);
+          g.globalCompositeOperation = 'source-over'; g.restore();
+        }
         stage = '변환' + at.level;
         jpeg = canvas.toDataURL('image/jpeg', 0.97);
         lastErr = null; break;
